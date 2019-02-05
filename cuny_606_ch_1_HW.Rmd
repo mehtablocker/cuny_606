@@ -1,0 +1,71 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 1 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+###1.8
+(a) Each row represents one person's responses to the survey.
+(b) 1691
+(c) sex: categorical (nominal)  
+age: numerical (could be continuous but here it looks to be discrete)  
+marital: categorical (nominal)  
+grossIncome: categorical (ordinal)  
+smoke: categorical (nominal)  
+amtWeekends: numerical (discrete)  
+amtWeekdays: numerical (discrete)
+
+###1.10
+(a) The population of interest is children between the ages of 5 and 15. The sample is the 160 children in the study.
+(b) Given that it was a controlled experiment, it seems pretty fair to draw conclusions about causality and generalize them to the population at hand. But it would not be okay to generalize beyond the population (to adults above 15 years old, for example.) I would also be curious/careful about things like cultural, socio-economic, familial factors and biases. Hopefully the researchers already accounted for that.
+
+###1.28
+(a) No, we can only say that smoking and dementia seem to be associated. We cannot necessarily draw a causal link from the study because it was not a controlled experiment.
+(b) No, once again we can conclude only that there might be an association between sleep disorders and bullying. (I say "might" because the article says "twice as likely" but does not cite significance or probability statistics.)
+
+###1.36
+(a) Randomized experiment
+(b) The group that exercises is the treatment group, the group that does not exercise is the control group.
+(c) Yes, age is the blocking variable.
+(d) No
+(e) Being a randomized experiment, causal relationships are allowed to be established for the population at hand (not necessarily the population at large, for example an 85 year old.) As usual, I would look carefully at potential sources of bias.
+(f) Potential reservations would include: duplication of similar studies that may have been done before, whether twice a week is enough (ie, would three or four times a week be better for distinguishing puproses?), moral objections to forcing people to not exercise.
+
+###1.48
+```{r ex_1.48, warning=F, message=F}
+library(dplyr)
+library(DATA606)
+library(openintro)
+
+boxplot(stats.scores %>% unlist() %>% unname(), main="Exam scores of introductory statistics students")
+```
+
+###1.50
+(a) Symmetrical, somewhat bell-shaped (potentially leptokurtic?) distribution matching boxplot 2
+(b) Uniform distribution matching boxplot 3
+(c) Right-skewed distribution matching boxplot 1
+
+###1.56
+(a) Right skewed, median, IQR because more robust to the non symmetric shape of the distribution
+(b) Symmetric, mean, SD because outliers aren't much of an issue with such a symmetric distribution
+(c) Right skewed, mean, SD because the median/IQR won't reveal much since most of the distribution is concentrated at 0
+(d) Slightly right skewed to symmetric, median, IQR because they're more robust, but mean/SD may be usable if the right tail is not too long
+
+###1.70
+(a) No, probability of survival was different when conditional on getting a transplant or not.
+(b) Getting a transplant led to longer survival time.
+(c) 30/34 (65%) of the treatment group died. 45/69 (88%) of the control group died.
+(d)
+i. Getting a transplant is beneficial for survival.
+ii. 28, 75, 69, 34, 0, 0.23 or more
+iii. A difference in proportions this high is unlikely due to chance alone, thereby suggesting the treatment is effective.
