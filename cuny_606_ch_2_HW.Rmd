@@ -1,0 +1,89 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 2 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###2.6
+(a) 0
+(b) 4/36
+(c) 1/36
+
+###2.8
+(a) No, a person could be both.
+(b) [10.4% below poverty and not speaking a foreign language { ] 4.2% below poverty and speaking a foreign language [ } 16.5% not below poverty and speaking a foreign language]
+(c) 10.4%
+(d) 35.3%
+(e) 64.7%
+(f) No because P(poverty)=14.6% but P(poverty | foreign lang)= (4.2/20.7) = 20.3%, so a person is more likely to be below poverty if they speak a foreign language at home.
+
+###2.20
+(a) 144/204 = 70.6%
+(b) Question is slightly ambiguous. If they are asking P(self=blue & partner=blue) then 78/204 = 38.2%, but if they are asking P(partner=blue | self=blue) then 78/114 = 68.4%
+(c) Same ambiguity but I will assume they are asking for conditional probability as opposed to joint.  
+P(partner=blue | self=brown) = 19/54 = 35%  
+P(partner=blue | self=green) = 11/36 = 30.6%  
+(d) No because P(self=blue) = 114/204 = 55.9% but P(self=blue | partner=blue) = 78/108 = 72.2%, so a person is more likely to have blue eyes if his partner has blue eyes.
+
+###2.30
+
+```{r ex_2.30}
+
+## (a)
+(13 + 15) / (13 + 15 + 59 + 8) * 59 / (27 + 59 + 8)
+
+## (b)
+(13 + 59) / (13 + 15 + 59 + 8) * (12 + 15) / (12 + 15 + 59 + 8)
+
+## (c)
+(13 + 59) / (13 + 15 + 59 + 8) * (13 + 15) / (13 + 15 + 59 + 8)
+
+## (d)
+### Because 27 books out of 94 is not substantially different than 28 books out of 95.
+
+```
+
+###2.38
+
+```{r ex_2.38}
+
+## (a)
+0.54 * 0 + 0.34 * 25 + 0.12 * 60  #mean in dollars
+
+# To be honest, I'm not sure exactly what they're looking for with the standard deviation of revenue. The formula for variance of a proportion is npq, so if you use that independently you'd get the formula below. But I believe this problem as stated is a multinomial problem (i.e., the probabilities are not independent), in which case this calculation is much more complicated and involves multiplication of the covariance matrix.
+sqrt(0^2 * 0.54*(1-0.54) + 25^2 * 0.34*(1-0.34) + 60^2 * 0.12*(1-0.12))
+
+## (b)
+120*0.54 * 0 + 120*0.34 * 25 + 120*0.12 * 60  #mean in dollars
+
+# see my above comment regarding the standard deviation
+sqrt(0^2 * 120*0.54*(1-0.54) + 25^2 * 120*0.34*(1-0.34) + 60^2 * 120*0.12*(1-0.12))
+
+```
+
+###2.44
+(a) right skewed
+(b) (21.2 + 18.3 + 15.8 + 4.7 + 2.2) = 62.2%
+(c) It would be .622 * .41 = 25.5% if gender and income were independent but I would not want to make that assumption.
+(d) So clearly they are not independent.
+
