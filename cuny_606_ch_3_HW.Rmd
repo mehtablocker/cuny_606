@@ -1,0 +1,157 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 3 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###3.2
+```{r ex_3.2}
+### Write function for shading
+shade_area_normal <- function(shade_lower=-3, shade_upper=-1, xlim_lower=-3, xlim_upper=3, add=F){
+  # Create data for the area to shade
+  cord.x <- c(shade_lower,seq(shade_lower,shade_upper,0.01),shade_upper) 
+  cord.y <- c(0,dnorm(seq(shade_lower,shade_upper,0.01)),0) 
+  
+  if (add==F){ 
+    # Make a curve
+    curve(dnorm(x,0,1), xlim=c(xlim_lower,xlim_upper), main='Standard Normal') }
+   
+  # Add the shaded area.
+  polygon(cord.x,cord.y,col='skyblue')
+}
+
+#(a)
+pnorm(-1.35)
+shade_area_normal(-3, -1.35)
+
+#(b)
+pnorm(1.48, lower.tail = F)
+shade_area_normal(1.48, 3)
+
+#(c)
+pnorm(1.5)-pnorm(-0.4)
+shade_area_normal(-0.4, 1.5)
+
+#(d)
+pnorm(-2)+pnorm(2, lower.tail = F)
+shade_area_normal(-3, -2)
+shade_area_normal(2, 3, add=T)
+
+```
+
+###3.4
+```{r ex_3.4}
+#(a)
+# Normal(4313, 583) and Normal(5261, 807)
+
+#(b)
+leo_z <- (4948-4313)/583
+mary_z <- (5513-5261)/807
+leo_z
+mary_z
+# The z-scores tell us how many standard deviations their finishing times were higher or lower than average. In this case both of them were higher (i.e., worse/slower) than average.
+
+#(c)
+# Mary's z-score is better than Leo because it is lower, i.e., faster relative to average.
+
+#(d)
+pnorm(leo_z, lower.tail = F)
+
+#(e)
+pnorm(mary_z, lower.tail = F)
+
+#(f)
+# Yes, z-score analysis is based on an assumption of normality.
+
+```
+
+###3.18
+```{r ex_3.18}
+#(a) Yes, it does:
+heights <- c(54,55,56,56,57,58,58,59,60,60,60,61,61,62,62,63,63,63,64,65,65,67,67,69,73)
+heights_z <- (heights-mean(heights))/sd(heights)
+sum(heights_z> -1 & heights_z<1)/length(heights_z)
+sum(heights_z> -2 & heights_z<2)/length(heights_z)
+sum(heights_z> -3 & heights_z<3)/length(heights_z)
+
+#(b) Yes, it looks reasonable. The density curve fits the histogram decently, and the qqnorm plot looks fairly linear, particularly for the sample size.
+
+```
+
+###3.22
+```{r ex_3.22}
+#(a)
+p <- 0.02
+q <- 1-p
+n <- 10
+q^9*p
+
+#(b)
+q^100
+
+#(c)
+1/p   #mean
+sqrt(q/p^2)   #sd
+
+#(d)
+p <- 0.05
+1/p   #mean
+sqrt(q/p^2)   #sd
+
+#(e)
+# Increasing the probability has the effect of lowering the mean and standard deviation of the geometric distribution.
+
+```
+
+###3.38
+```{r ex_3.38}
+#(a)
+p_b <- 0.51
+p_g <- 1-p_b
+dbinom(2, 3, p_b)
+
+#(b)
+p_b*p_b*p_g + p_b*p_g*p_b + p_g*p_b*p_b
+
+#(c)
+# Because:
+choose(8,3)
+# is a lot of combinations.
+
+```
+
+###3.42
+```{r ex_3.42}
+#(a)
+p <- 0.15
+n <- 10
+k <- 3
+choose(n-1, k-1)*p^k*(1-p)^(n-k)
+
+#(b)
+p
+
+#(c)
+# The probability in (a) is lower than in (b) because getting to the 10th trial with two successes is itself improbable.
+
+```
