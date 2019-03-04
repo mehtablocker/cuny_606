@@ -1,0 +1,97 @@
+---
+title: "CUNY 606"
+subtitle: "HW Presentation: Exercise 3.3"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+###The Problem
+Sophia who took the GRE scored 160 on the Verbal Reasoning section and 157 on the Quantitative Reasoning section. The mean score for Verbal was 151 with a standard deviation of 7, and the mean score for Quantitative was 153 with a standard deviation of 7.67. Suppose both distributions are nearly normal.
+
+
+###Answers in R code
+```{r answers}
+
+
+
+######(a) Write down the short-hand for these two normal distributions
+
+# Normal(151, 7) for Verbal Reasoning
+# Normal(153, 7.67) for Quantitative Reasoning
+
+
+
+######(b) What is her z-score on each? Draw it on a graph.
+
+verbal_z <- (160 - 151) / 7
+quant_z <- (157 - 153) / 7.67
+
+verbal_z
+quant_z
+
+curve(dnorm(x,0,1), xlim=c(-3,3), main="Z-Scores", xlab="z", ylab="Density")
+abline(v=verbal_z, col="red")
+abline(v=quant_z, col="blue")
+legend("topleft", legend=c("Verbal", "Quantitative"), lty=c(1,1), col=c("red", "blue"))
+
+
+
+######(c) Interpretation
+
+# The z-scores tell us how many standard deviations her scores were higher or lower than average. In this case both were higher than average.
+
+
+
+######(d) On which test did she do better?
+
+# Relative to others she did better on Verbal, as evidenced by the higher z-score.
+
+
+
+######(e) Find her percentile scores.
+
+verbal_pct <- pnorm(verbal_z, lower.tail = T)
+quant_pct <- pnorm(quant_z, lower.tail = T)
+
+verbal_pct
+quant_pct
+
+
+
+######(f) What percent of test takers did better than her?
+
+1 - verbal_pct
+1 - quant_pct
+
+
+
+######(g) Why is her raw score comparison different than z-score?
+
+# In this case it is not, but it could be if the means and SDs were different.
+
+
+
+######(h) If the distributions of scores were not nearly normal, would the answers above change?
+
+# Yes, z-score analysis is based on an assumption of normality.
+
+```
+
