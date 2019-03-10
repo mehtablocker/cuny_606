@@ -1,0 +1,117 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 4 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###4.4
+(a) 171.1 (mean), 170.3 (median)
+(b) 9.4 (SD), IQR: 163.8 (Q1) - 177.8 (Q3) = 14cm range
+(c) 180 cm = z score of 0.95, not unusually tall
+    155 cm = z score of -1.71, I would consider ~4th percentile pretty short
+(d) Not exactly the same, but fairly close because a sample size off 507 has a pretty small standard error.
+(e) Standard error = 0.417
+
+
+###4.14
+(a) False, the 436 people are the sample. The CI tells us about the parameter.
+(b) False, the sample size is big enough such that the CLT shows the sampling distribution will be normal.
+(c) True, that is the definition of CI.
+(d) True, but confidence does not imply probability of the parameter being in that range.
+(e) True, 90% is a smaller area under the curve.
+(f) False, you'd need 3^2^ = 9 times larger
+(g) True, 89.11-84.71 = 4.4
+
+
+###4.24
+(a) Yes, the sample size is >30, the distribution is not terribly skewed, and the samples are independent.
+
+(b) Yes it is convincing due to the low p-value:
+```{r ex_4.24b}
+n <- 36
+x_bar <- 30.69
+s <- 4.31
+std_error <- s/sqrt(n)
+pnorm(x_bar, 32, std_error)
+```
+
+(c) The p-value tells us that in repeated samples of 36 children, if the true mean were 32 months there would be about a 3.4% chance of getting a sample mean of 30.69 months or lower.
+
+(d) 
+```{r ex_4.24d}
+c(qnorm(0.05, x_bar, std_error), qnorm(0.95, x_bar, std_error))
+```
+
+(e) Yes, 32 is out of range of the 90 percent CI.
+
+
+###4.26
+```{r ex_4.26}
+
+###(a)
+
+# If the true IQ were 100 then a 90 percent interval would be:
+c(qnorm(.05, 100, 6.5/sqrt(36)), qnorm(.95, 100, 6.5/sqrt(36)))
+
+# The sample mean of 118.2 is well outside that range, so there is convincing evidence of a difference.
+
+###(b)
+c(qnorm(.05, 118.2, 6.5/sqrt(36)), qnorm(.95, 118.2, 6.5/sqrt(36)))
+
+###(c)
+# Yes, 100 is out of range of the CI calculated in (b).
+
+```
+
+
+###4.34
+"Sampling distribution" of the mean is the theoretical distribution we would achieve if we took repeated samples from a population and calculated the sample mean every time. The mean of the sampling distribution should be the same as the population mean (unbiased estimator.) The spread of the sampling distribution (i.e., standard error) goes down as the size of our samples goes up. The shape of the sampling distribution get more and more gaussian as the size of our samples goes up.
+
+
+###4.40
+```{r ex_4.40}
+
+###(a)
+pnorm(10500, 9000, 1000, lower.tail=F)
+
+###(b)
+# Sampling distribution
+
+###(c)
+pnorm(10500, 9000, 1000/sqrt(15), lower.tail=F)
+
+###(d)
+ggplot(data.frame(x = c(6000, 12000)), aes(x)) + 
+  stat_function(fun = dnorm, args = list(mean = 9000, sd = 1000), aes(colour='Population')) +
+  stat_function(fun = dnorm, args = list(mean = 9000, sd = 1000/sqrt(15)), aes(colour='Sampling')) + 
+  labs(title = "Sampling vs Population Distributions", x="Hours", y="Density") + 
+  scale_colour_manual(name = "Distributions", values = c("red", "blue"))
+
+###(e)
+# Not using these methods with small sample sizes like 1 or 15.
+
+```
+
+###4.48
+The p-value will decrease because raising the value of n will have the effect of shrinking the standard error, i.e., the spread of the distribution, which will decrease the area under curve below the value in question.
+
