@@ -1,0 +1,151 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 5 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###5.6
+```{r ex_5.6}
+lwr_bnd <- 65
+upr_bnd <- 77
+x_bar <- mean(c(lwr_bnd, upr_bnd))
+n <- 25
+df <- n - 1
+ci <- 0.90
+alpha <- (1-ci)/2
+t_score <- qt(alpha, df=df, lower.tail = F)
+s <- (x_bar - lwr_bnd) * sqrt(n) / t_score
+
+paste0("Mean: ", x_bar); paste0("Margin of error: ", x_bar-lwr_bnd); paste0("Sample sd: ", s)
+```
+
+###5.14
+```{r ex_5.14}
+s <- 250
+moe <- 25
+
+### (a)
+ci <- 0.90
+alpha <- (1-ci)/2
+z_score <- qnorm(alpha, lower.tail = F)
+n <- (z_score * s/moe)^2
+ceiling(n)
+
+### (b)
+# Luke will need a larger sample size to have the same margin of error with higher confidence. An intuitive way of visualizing this is that in order to fix the margin of error on the x axis but decrease the area under the curve in the tails, one needs to make the distribution narrower, which can be done only by increasing the sample size.
+
+### (c)
+ci <- 0.99
+alpha <- (1-ci)/2
+z_score <- qnorm(alpha, lower.tail = F)
+n <- (z_score * s/moe)^2
+ceiling(n)
+```
+
+###5.20
+```{r ex_5.20}
+
+### (a)
+# The histogram is pretty centered around 0, while the boxplot shows a slightly higher median for writing.
+
+### (b)
+# The scores are independent, though in general I'd guess there is a correlation between reading and writing skills.
+
+### (c)
+# H0: mu_difference = 0
+# HA: mu_difference !=0
+
+### (d)
+# The sample size is 200 (which is far less than 10% of all high school seniors), the samples are independent, and the data do not show much skew. The conditions are met.
+
+### (e)
+x_bar <- -0.545
+s <- 8.887
+n <- 200
+df <- n - 1
+ci <- 0.90
+alpha <- (1-ci)/2
+t_score <- round(qt(alpha, df=df, lower.tail = F), 3)
+
+# If there were no true difference in scores, by chance alone we'd expect a difference of
+0 - t_score * s / sqrt(n); 0 + t_score * s / sqrt(n)
+# or more extreme 10% of the time. Our observed difference is far less than this, so it is not convincing evidence of a difference.
+
+### (f)
+# We could have made a Type 2 error, meaning we could have found no difference even though a true difference exists. The only way to verify would be to re-run the test with different, and potentially larger, samples.
+
+### (g)
+# Yes we would expect any reasonable CI for the observed difference to include 0, as evidenced by the margin of error shown above.
+
+```
+
+###5.32
+```{r ex_5.32}
+x_bar_1 <- 16.12
+s_1 <- 3.58
+n_1 <- 26
+
+x_bar_2 <- 19.85
+s_2 <- 4.51
+n_2 <- 26
+
+mu_diff <- abs(x_bar_1 - x_bar_2)
+
+df <- min(n_1, n_2) - 1
+ci <- 0.99
+alpha <- (1-ci)/2
+t_score <- round(qt(alpha, df=df, lower.tail = F), 3)
+
+se <- sqrt(s_1^2/n_1 + s_2^2/n_2)
+
+# If there were no true difference in means, by chance alone we'd expect a difference of
+0 - t_score * se; 0 + t_score * se
+# or more extreme 1% of the time.
+
+# The observed difference in means is:
+mu_diff
+
+# So, the observed difference is outside even a 99% interval, making it highly unlikely to be due to chance alone. Therefore, the data provide strong evidence of a true difference in means.
+
+```
+
+###5.48
+```{r ex_5.48}
+
+### (a)
+# H0: there is no difference in means
+# HA: there is a difference in means
+
+### (b)
+# The observations are independent, the data within each group are nearly normal (HS and Bachelor's probably need to be double checked), and the variability across the groups is about equal.
+
+### (c)
+
+# [degree, Df] = 4 ;  [degree, SumSq] = 121*(38.67-40.45)^2 + 546*(39.6-40.45)^2 + 97*(41.39-40.45)^2 + 253*(42.55-40.45)^2 + 155*(40.85-40.45)^2 = 2004.10 ; [degree, Fvalue] = 501.54/229.12 = 2.19
+# [Residuals, Df] = 1167 ;  [Residuals, MeanSq] = 267382/1167 = 229.12
+# [Total, Df] = 1171 ; [Total, SumSq] = 2004.10+267382 = 269386.1
+
+### (d)
+# The p-value of 0.0682 indicates that there is not enough evidence to conclude that there is a difference in means.
+
+```
