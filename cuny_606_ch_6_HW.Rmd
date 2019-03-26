@@ -1,0 +1,160 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 6 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###6.6
+
+(a) False. The CI refers to the population, not the sample.
+
+(b) True. The margin of error is 3%.
+
+(c) True. That is the definition of CI.
+
+(d) False. At 90% there is more area under the curve therefore the interval is smaller.
+
+
+###6.12
+```{r ex_6.12}
+
+### (a)
+# 48% is a sample statistic because it is the empirical proportion of the 1259 people sampled.
+
+### (b)
+p <- 0.48
+q <- 1-p
+n <- 1259
+se <- sqrt(p*q/n)
+ci <- 0.95
+alpha <- (1-ci)/2
+z_score <- abs(qnorm(alpha))
+
+# With 95% confidence the proportion of US residents who think marijuana should be legal is in the interval:
+c(p-z_score*se, p+z_score*se)
+
+### (c)
+# Yes, the sample size is large enough based on the expected proportion of 48% of 1259 such that we can approximate with a normal distribution.
+
+### (d)
+# No. The empirical sample proportion is 48%. To boot, if 50% were the true proportion, the chance of getting 0.48 is low:
+pnorm(p, 0.5, se, lower.tail = T)
+
+```
+
+###6.20
+```{r ex_6.20}
+moe <- 0.02
+n <- p*q/(moe/z_score)^2
+ceiling(n)
+
+```
+
+###6.28
+```{r ex_6.28}
+p1 <- 0.08
+q1 <- 1-p1
+n1 <- 11545
+p2 <- 0.088
+q2 <- 1-p2
+n2 <- 4691
+
+p <- abs(p1-p2)
+se <- sqrt(p1*q1/n1 + p2*q2/n2)
+
+ci <- 0.95
+alpha <- (1-ci)/2
+z_score <- abs(qnorm(alpha))
+
+# With 95% confidence the difference in proportions between California and Oregon residents who are sleep deprived is in the interval:
+c(p-z_score*se, p+z_score*se)
+
+
+```
+
+###6.44
+```{r ex_6.44}
+
+### (a)
+# H0: Deers forage in various habitats according to the naturally occurring frequencies of said habitats.
+# HA: Deers forage in various habitats according to a preference different than the naturally occurring frequencies.
+
+### (b)
+# We can use a chi-squared test to answer this.
+
+### (c)
+n <- 426
+exp_freq <- c(0.048, 0.147, 0.396, 0.409)
+exp_counts <- exp_freq * n
+
+# The assumptions and conditions are satisfied. The expected counts in each bin are greater than 5:
+exp_counts
+
+### (d)
+obs_counts <- c(4, 16, 67, 345)
+z_squareds <- (obs_counts - exp_counts)^2 / exp_counts
+chi_squared <- sum(z_squareds)
+df <- length(obs_counts)-1
+
+# If H0 were true, the probability of getting these observed counts by chance alone is:
+pchisq(chi_squared, df, lower.tail = F)
+# i.e., almost impossible. So we reject H0.
+
+# (We can compare to the R chisq.test function to confirm a similar result.)
+chisq.test(x=obs_counts, p=exp_freq)
+
+```
+
+###6.48
+```{r ex_6.48}
+
+### (a)
+# We can use a chi-squared test of two-way contingency table.
+
+### (b)
+# H0: There is no difference in depression percentage between the coffee consumption bins.
+# HA: There is a difference in depression percentage between the coffee consumption bins.
+
+### (c)
+dep_pct <- 2607 / 50739
+non_dep_pct <- 1-dep_pct
+dep_pct; non_dep_pct
+
+### (d)
+exp_count <- 6617 * dep_pct
+exp_count
+z_squared <- (373 - exp_count)^2 / exp_count
+z_squared
+
+### (e)
+df <- (2 -1) * (5-1)   #(nrow-1)*(ncol-1)
+pchisq(20.93, df, lower.tail = F)
+
+### (f)
+# If H0 were true, the probability of getting these observed counts by chance alone is almost impossible. So we reject H0.
+
+### (g)
+# Yes, first of all this is only one test. (We should consider any prior information on the subject.) Secondly, the test only tells us that the data are not likely to have come from an underlying distribution in which each bin has an equal depression percentage. We cannot infer anything from this test about the probability of depression based on specific coffee consumption.
+
+```
+
