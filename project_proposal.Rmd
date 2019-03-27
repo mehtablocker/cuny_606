@@ -1,0 +1,73 @@
+---
+title: DATA 606 Data Project Proposal
+author: mehtablocker
+---
+
+### Data Preparation
+
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+# load data
+
+```
+Note: I have not loaded the data because it requires a bit of cleaning and tidying, which will be part of the project. I have given the source/link for the data below though.
+
+
+### Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+
+Are retail sales affected by the outside temperature and fuel prices?
+
+
+### Cases 
+
+**What are the cases, and how many are there?**
+
+Each case is a weekly data point indicating the date, as well as the dependent and independent variables. There are thousands of cases. One of the tables has over 400,000 rows. (I may end up taking a subset of the total data if it's too cumbersome to load from Github.)
+
+
+### Data collection 
+
+**Describe the method of data collection.**
+
+The data were provided by kaggle, link below.
+
+
+### Type of study 
+
+**What type of study is this (observational/experiment)?**
+
+Observational.
+
+
+### Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+https://www.kaggle.com/manjeetsingh/retaildataset#stores%20data-set.csv
+
+
+
+### Dependent Variable
+
+**What is the response variable? Is it quantitative or qualitative?**
+
+The response variable is weekly retail sales, which is quantitative.
+
+
+### Independent Variable
+
+**You should have two independent variables, one quantitative and one qualitative.**
+
+The first independent variable is temperature, in Farenheit, which is quantitative. The second independent variable is fuel price, which is qualitative / categorical.
+
+
+### Relevant summary statistics 
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+
+```
+
+As mentioned above, the data will be cleaned, loaded, analyzed and visualized for the project itself.
