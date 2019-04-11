@@ -1,0 +1,56 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 7 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###7.24
+(a) The relationship looks fairly linear.
+(b) Carbs is the response. Calories is the explanatory.
+(c) To predict carbs for items in which only calories are known.
+(d) Yes, the relationship looks linear and the residuals are approximately gaussian. (There appears to be a touch of heteroscedasticity in the residual plot, but it isn't egregious.)
+
+
+###7.26
+(a) cm_height = 106 + 0.61 * cm_shoulder_girth
+(b) slope: height increases by 0.61 cm for every cm increase in shoulder girth
+    intercept: shoulder girth of 0 cm would correspond to a height of 106 cm (not realistic but just an indication of where it crosses the y-axis)
+(c) R^2^ is 0.45 which means 45% of the variance in height is described by the regression line
+(d) 167
+(e) The residual is -7, meaning the actual data point is 7 cm less than what the regression predicted
+(f) No, 56 cm is way out of range (z-score of -4.9 and not near any of the observed data)
+
+
+###7.30
+(a) g_heart_weight = -0.357 + 4.034 * kg_body_weight
+(b) 0 kg of body weight would be -0.357 g of heart weight (not realistic but just the y-axis point)
+(c) heart weight increases by 4.034 grams for every kilogram increase in body weight
+(d) 64.66% of the variance in heart weight is described by the regression line
+(e) r = 0.8
+
+
+###7.40
+(a) 0.13
+(b) Yes, if the true slope were 0 then the observed slope would have a t-score of 4.13, which is very unlikely by chance alone
+(c) Yes, the requirements of linearity, nearly normal residuals, constant variability, and independent observations are satisfied.
+
