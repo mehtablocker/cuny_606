@@ -1,0 +1,68 @@
+---
+title: "CUNY 606"
+subtitle: "Chapter 8 HW Assignment"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(DATA606)
+library(dplyr)
+
+```
+
+  
+###8.2
+a. birth_weight = 120.07 - 1.93 x parity
+b. The slope is effectively a 1.93 "penalty" for being non-first born. i.e., birth_weight is 120.07 ounces for first born and 118.14 for non-first born.
+c. No, the p-value is above 0.05
+
+###8.4
+a. days_absent = 18.93 - 9.11 x eth + 3.10 x sex + 2.15 x lrn
+b. Being not aboriginal results in a prediction of 9.11 days less than aboriginal. For male prediction is 3.1 days more than female. For slow learner prediction is 2.15 days more than average learner.
+c. (y - y_predicted) = 2 - 24.18 = -22.18
+d. R^2^ = 1 - (240.57/264.17) = 0.089
+e. adjusted R^2^ = 1 - (240.57/264.17) x (145/142) = 0.07
+
+###8.8
+lrn
+
+###8.16
+a. There is one outlier value but after that there seems to be only a slight relationship.
+b. The key components are that the coefficient for Temperature is negative, indicating that probability of O-ring failure decreases as temperature rises, and the p-value for Temperature is near 0, indicating that it is a statistically significant predictor.
+c. log(p_failure/(1-p_failure)) = 11.663 - 0.2162 x Temperature
+d. Yes, see answer above. There seems to be a statistically significant relationship between Temperature and O-ring failure. (This does not speak towards the relationship between O-ring failure and shuttle failure, however.)
+
+###8.18
+
+```{r ex_8_18}
+get_prob <- function(temp){
+  exp(11.663 - 0.2162*temp)/(1 + exp(11.663 - 0.2162*temp))
+}
+
+### (a)
+get_prob(51)
+get_prob(53)
+get_prob(55)
+
+### (b)
+temps <- seq(51, 71, 2)
+plot(temps, sapply(temps, get_prob), type="l", xlab = "Temperature", ylab="Probability of O-ring Failure")
+
+### (c)
+# The data should be mostly independent, though there may have been changes after each flight and the book does not show chronological order of the data.
+# We can visually see our linearity assumption between Temperature and logit(p):
+plot(temps, sapply(temps, function(x) 11.663 - 0.2162*x), xlab = "Temperature", ylab = "logit(p)")
+```
