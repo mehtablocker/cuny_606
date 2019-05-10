@@ -1,0 +1,176 @@
+---
+title: "CUNY 606"
+subtitle: "Final Project"
+author: "mehtablocker"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+<style type="text/css">
+h3 {
+  color: DarkBlue;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+
+__This project will explore the following question:  Are retail sales affected by the outside temperature and fuel prices?__
+
+<br>
+
+###Load libraries
+
+```{r load_libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(RMySQL)
+library(dbplyr)
+library(ggplot2)
+library(hexbin)
+library(broom)
+library(knitr)
+```
+
+<br>
+
+###Acquire the data
+
+The original data was procured from https://www.kaggle.com/manjeetsingh/retaildataset#stores%20data-set.csv and hosted on Github. But because the files are so large and time-consuming to pull directly into R, a remote MySQL database was created using the following code (commented out because it does not need to be re-run):
+
+```{r write_sql}
+# drv <- dbDriver("MySQL")
+# con <- dbConnect(drv, host = "mytestdb.c4udqcubz5hi.us-east-2.rds.amazonaws.com", port = 3306, user = "user", password = "password")
+# query <- "DROP DATABASE IF EXISTS retail_sales;"
+# dbExecute(con, query)
+# query <- "CREATE DATABASE retail_sales DEFAULT CHARACTER SET utf8;"
+# dbExecute(con, query)
+# 
+# con <- dbConnect(drv, dbname="retail_sales", host = "mytestdb.c4udqcubz5hi.us-east-2.rds.amazonaws.com", port = 3306, user = "user", password = "password")
+# sales_df <- read.csv('https://raw.githubusercontent.com/mehtablocker/cuny_606/master/final_project/sales.csv', stringsAsFactors = F)
+# dbWriteTable(con, "sales", sales_df, row.names=F)
+# features_df <- read.csv('https://raw.githubusercontent.com/mehtablocker/cuny_606/master/final_project/features.csv', stringsAsFactors = F)
+# dbWriteTable(con, "features", features_df, row.names=F)
+# stores_df <- read.csv('https://raw.githubusercontent.com/mehtablocker/cuny_606/master/final_project/stores.csv', stringsAsFactors = F)
+# dbWriteTable(con, "stores", stores_df, row.names=F)
+# dbDisconnect(con)
+```
+
+Now that the database and tables are created, we can load them into R:
+
+```{r load_tables}
+retail_sales_db <- src_mysql(dbname="retail_sales", host = "mytestdb.c4udqcubz5hi.us-east-2.rds.amazonaws.com", port = 3306, user = "user", password = "password")
+sales_df <- tbl(retail_sales_db, "sales") %>% collect(n=Inf)
+features_df <- tbl(retail_sales_db, "features") %>% collect(n=Inf)
+stores_df <- tbl(retail_sales_db, "stores") %>% collect(n=Inf)
+```
+
+<br>
+
+###Exploring the data
+
+We start by examining the tables.
+
+```{r examine_tables}
+sales_df %>% head() %>% kable()
+features_df %>% head() %>% kable()
+stores_df %>% head() %>% kable()
+```
+
+We would like to have our indepedent and dependent variables in the same data frame, so we'll join the appropriate columns from features_df to sales_df.
+
+```{r join_tables}
+df <- sales_df %>% 
+  left_join(features_df %>% select(Store, Date, Temperature, Fuel_Price), by=c("Store", "Date"))
+df %>% head() %>% kable()
+```
+
+Next we would like to turn Fuel Price into a simple qualitative variable based on whether it is "high" or "low". We do that by creating a dummy variable, split by the median.
+
+```{r create_dummy}
+df %>% select(Fuel_Price) %>% summary()
+df <- df %>% mutate(fp_high = ifelse(Fuel_Price>=median(Fuel_Price), 1, 0))
+df %>% head() %>% kable()
+df %>% nrow()
+```
+
+Each case (row) is a weekly data point indicating the date, as well as the dependent (Temperature and fp_high) and independent (Weekly_Sales) variables. There are over 400 thousand cases!
+
+<br>
+
+###Visualizing the data
+
+Now that our data are transformed and tidy, we explore a few plots of the variables.  
+
+A histogram of Weekly Sales indicates outlier values, so we filter out everything above 150 thousand and try again.
+
+```{r weekly_sales_hist}
+df %>% ggplot(aes(Weekly_Sales)) + geom_histogram(bins=50)
+df <- df %>% filter(Weekly_Sales<150000)
+df %>% ggplot(aes(Weekly_Sales)) + geom_histogram(bins=50)
+```
+
+We also examine a histogram of Temperature, as well as a scatterplot of Temperature and Weekly Sales. (The latter is an expensive and somewhat fruitless computation with ~400 thousand rows, so we instead use a a small random sample and then a hexagonal bin plot on the whole dataset.)
+
+```{r temp_weekly_scatter}
+df %>% ggplot(aes(Temperature)) + geom_histogram(bins=20)
+df %>% sample_frac(0.01) %>% 
+  ggplot(aes(x=Temperature, y=Weekly_Sales)) + geom_point() + geom_jitter() + geom_smooth(method = "loess")
+df %>% ggplot(aes(x=Temperature, y=Weekly_Sales)) + stat_binhex()
+```
+
+There does not appear to be much of a relationship between Temperature and Weekly Sales.
+
+<br>
+
+###Fitting a model
+
+Now we fit a multiple linear regression model to formally examine the relationship between Weekly Sales and Temperature + Fuel Prices.
+
+```{r fit_lm}
+lm_fit <- lm(Weekly_Sales ~ Temperature + fp_high, data=df)
+summary(lm_fit)
+```
+
+The Adjusted R-squared is terribly low. We also examine the residual plots.
+
+```{r residual_plot}
+lm_df <- augment(lm_fit)
+
+### residual plot
+lm_df %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  stat_binhex() + 
+  geom_hline(yintercept = 0)
+
+### residual histogram
+lm_df %>% 
+  ggplot(aes(.resid)) + 
+  geom_histogram(bins = 50)
+
+### residual qqplot
+lm_df %>% sample_frac(0.01) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq() + 
+  stat_qq_line()
+```
+
+The residuals are not normally distributed.
+
+<br>
+
+###Summary
+
+We acquired a large set of retail sales data, created a remote MySQL database, and loaded the data into R. We started with a theory that retail sales might be correlated with fuel prices and outside temperature. After visualizing the data and then building a multiple linear regression model, it turns out we appear to be wrong! This is not necessarily a bad thing.  
+
+Theories try and fail all the time. It is important to report poor models just as it is to report good models. Otherwise the statistical community would (and very much does) suffer from "publishing bias" where people report findings only when they are successful, thereby incorrectly skewing our priors.  
+
+Future studies of retail sales might examine predictors such as time of year, holiday schedule, and economic indicators.
+
