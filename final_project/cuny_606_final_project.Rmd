@@ -107,13 +107,13 @@ Each case (row) is a weekly data point indicating the date, as well as the depen
 
 ###Visualizing the data
 
-Now that our data are transformed and tidy, we explore a few plots of the variables.  
+Now that our data are clean and tidy, we explore a few plots of the variables.  
 
-A histogram of Weekly Sales indicates outlier values, so we filter out everything above 150 thousand and try again.
+A histogram of Weekly Sales indicates an extremely non-normal distribution (very close to a Gamma distribution with shape=0.5 and rate=1/32000). We transform the variable by taking it to the power of 1/6. The new histogram looks more Gaussian, though not perfect.
 
 ```{r weekly_sales_hist}
 df %>% ggplot(aes(Weekly_Sales)) + geom_histogram(bins=50)
-df <- df %>% filter(Weekly_Sales<150000)
+df <- df %>% filter(Weekly_Sales>0) %>% mutate(Weekly_Sales = Weekly_Sales^(1/6))
 df %>% ggplot(aes(Weekly_Sales)) + geom_histogram(bins=50)
 ```
 
@@ -132,16 +132,12 @@ There does not appear to be much of a relationship between Temperature and Weekl
 
 ###Fitting a model
 
-Now we fit a multiple linear regression model to formally examine the relationship between Weekly Sales and Temperature + Fuel Prices.
+Now we fit a multiple linear regression model to formally examine the relationship between Weekly Sales (transformed) and Temperature + Fuel Prices. We also examine the residual plots.
 
 ```{r fit_lm}
 lm_fit <- lm(Weekly_Sales ~ Temperature + fp_high, data=df)
 summary(lm_fit)
-```
 
-The Adjusted R-squared is terribly low. We also examine the residual plots.
-
-```{r residual_plot}
 lm_df <- augment(lm_fit)
 
 ### residual plot
@@ -162,13 +158,13 @@ lm_df %>% sample_frac(0.01) %>%
   stat_qq_line()
 ```
 
-The residuals are not normally distributed.
+The residuals look okay (remember, we transformed Weekly Sales for a reason) but the overall fit is terrible. Looking at the summary of the linear model, we see the p-value for the qualitative Fuel Price variable is high. And the adjusted R-squared is very low, indicating that almost none of the variance in Weekly Sales (to the power of 1/6) is described by the variance in Temperature plus Fuel Price category.
 
 <br>
 
 ###Summary
 
-We acquired a large set of retail sales data, created a remote MySQL database, and loaded the data into R. We started with a theory that retail sales might be correlated with fuel prices and outside temperature. After visualizing the data and then building a multiple linear regression model, it turns out we appear to be wrong! This is not necessarily a bad thing.  
+We acquired a large set of retail sales data, created a remote MySQL database, and loaded the data into R. We started with a theory that retail sales might be correlated with fuel prices and outside temperature. After visualizing the data, transforming the response variable, and then building a multiple linear regression model, it turns out we appear to be wrong! This is not necessarily a bad thing.  
 
 Theories try and fail all the time. It is important to report poor models just as it is to report good models. Otherwise the statistical community would (and very much does) suffer from "publishing bias" where people report findings only when they are successful, thereby incorrectly skewing our priors.  
 
